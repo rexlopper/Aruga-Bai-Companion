@@ -7,8 +7,11 @@ import { DoctorsSection } from "@/components/sections/DoctorsSection";
 import { HowItWorksSection } from "@/components/sections/HowItWorksSection";
 import { SignupSection } from "@/components/sections/SignupSection";
 import { Footer } from "@/components/sections/Footer";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 export default function LandingPage() {
+  useAnalytics();
+
   return (
     <div className="min-h-screen bg-background font-sans">
       <NavBar />
