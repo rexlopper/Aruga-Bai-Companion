@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { InteractiveBaiDemo } from "@/components/InteractiveBaiDemo";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 function EcgLine() {
   return (
@@ -33,6 +34,9 @@ const statVariants = {
 };
 
 export function HeroSection() {
+  const { t } = useLanguage();
+  const stats = [t.hero.stat1, t.hero.stat2, t.hero.stat3];
+
   return (
     <section
       id="hero"
@@ -55,7 +59,7 @@ export function HeroSection() {
                 animate={{ opacity: [1, 0.3, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
               />
-              <span className="text-[#6FD1C2] text-sm font-semibold tracking-wide">Your intelligent health companion</span>
+              <span className="text-[#6FD1C2] text-sm font-semibold tracking-wide">{t.hero.badge}</span>
             </motion.div>
 
             <motion.h1
@@ -64,7 +68,7 @@ export function HeroSection() {
               transition={{ duration: 0.7, ease: "easeOut", delay: 0.08 }}
               className="font-nunito text-5xl sm:text-6xl font-extrabold text-white leading-[1.06] tracking-tight mb-8"
             >
-              Your health story, organized. Your companion, always ready.
+              {t.hero.headline}
             </motion.h1>
 
             <motion.p
@@ -73,7 +77,7 @@ export function HeroSection() {
               transition={{ duration: 0.7, ease: "easeOut", delay: 0.18 }}
               className="text-lg text-white/75 mb-12 leading-relaxed"
             >
-              ArugaBai gives Filipino families a smarter way to manage health — with an AI companion named Bai who already knows your history, and a record vault that's ready for every consultation.
+              {t.hero.body}
             </motion.p>
 
             <motion.div
@@ -87,14 +91,14 @@ export function HeroSection() {
                 data-testid="hero-cta-primary"
                 className="inline-flex justify-center items-center bg-[#1E8C75] hover:bg-[#3FAA8D] text-white px-9 py-4 rounded-xl text-base font-bold transition-all duration-200 shadow-xl shadow-[#1E8C75]/25 hover:shadow-[#3FAA8D]/30 hover:-translate-y-0.5"
               >
-                Join the Waitlist →
+                {t.hero.ctaPrimary}
               </a>
               <a
                 href="#how-it-works"
                 data-testid="hero-cta-secondary"
                 className="inline-flex justify-center items-center border border-white/30 hover:border-white/60 text-white/80 hover:text-white hover:bg-white/5 px-9 py-4 rounded-xl text-base font-semibold transition-all duration-200"
               >
-                See How It Works
+                {t.hero.ctaSecondary}
               </a>
             </motion.div>
 
@@ -103,11 +107,7 @@ export function HeroSection() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {[
-                "87% of patients repeat their history to every new doctor",
-                "65% store records as phone camera photos",
-                "Bai — available anytime, between every visit",
-              ].map((stat, i) => (
+              {stats.map((stat, i) => (
                 <motion.div
                   key={i}
                   custom={i}
@@ -122,7 +122,7 @@ export function HeroSection() {
             </div>
           </div>
 
-          {/* RIGHT — animated Bai companion */}
+          {/* RIGHT — interactive Bai companion */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
@@ -130,7 +130,6 @@ export function HeroSection() {
             className="hidden lg:flex justify-center items-center"
           >
             <div className="relative w-full max-w-sm">
-              {/* Glow halo behind card */}
               <div className="absolute inset-0 -m-6 rounded-full bg-[#1E8C75] blur-3xl opacity-15 pointer-events-none" />
               <InteractiveBaiDemo />
             </div>

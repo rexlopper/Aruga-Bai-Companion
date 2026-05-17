@@ -1,25 +1,16 @@
 import { Heart, Share2, Globe } from "lucide-react";
 import { motion } from "framer-motion";
-
-const cards = [
-  {
-    icon: Heart,
-    title: "One family record",
-    desc: "ArugaVault stores every prescription, lab result, and doctor's note in one organized place. No more digging through camera rolls.",
-  },
-  {
-    icon: Share2,
-    title: "Share with anyone",
-    desc: "Send your sibling to the consultation instead. Everything they need is already there — history, current meds, doctor's notes.",
-  },
-  {
-    icon: Globe,
-    title: "Always in the loop",
-    desc: "Even from abroad, you see every update, every new record, every change in Nanay's health. Real-time, organized, clear.",
-  },
-];
+import { useLanguage } from "@/i18n/LanguageContext";
 
 export function FamiliesSection() {
+  const { t } = useLanguage();
+
+  const cards = [
+    { icon: Heart, title: t.families.card1Title, desc: t.families.card1Desc },
+    { icon: Share2, title: t.families.card2Title, desc: t.families.card2Desc },
+    { icon: Globe,  title: t.families.card3Title, desc: t.families.card3Desc },
+  ];
+
   return (
     <section
       id="for-families"
@@ -34,19 +25,19 @@ export function FamiliesSection() {
           transition={{ duration: 0.6 }}
           className="max-w-3xl mb-20"
         >
-          <p className="text-[#1E8C75] uppercase tracking-widest font-bold text-xs mb-5">For Families</p>
+          <p className="text-[#1E8C75] uppercase tracking-widest font-bold text-xs mb-5">{t.families.label}</p>
           <h2 className="font-nunito text-4xl sm:text-5xl font-extrabold text-[#073D31] mb-8 leading-tight">
-            Stop managing your parent's health from memory.
+            {t.families.headline}
           </h2>
           <p className="text-xl text-[#4A6B63] leading-relaxed">
-            You've become the family health coordinator — fielding Viber messages from siblings, photographing every prescription, Googling every side effect. ArugaBai gives your family one organized system, so you can stop worrying and start knowing.
+            {t.families.body}
           </p>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
           {cards.map(({ icon: Icon, title, desc }, i) => (
             <motion.div
-              key={title}
+              key={i}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
@@ -71,16 +62,16 @@ export function FamiliesSection() {
           className="bg-[#F4F7F6] border-l-4 border-[#E8960F] px-10 py-10 rounded-r-2xl mb-14"
         >
           <p className="text-xl italic text-[#1A2B28] leading-relaxed mb-5">
-            "I take photos of every prescription. I set the reminders. I Google every side effect. And still I feel like I'm not doing enough."
+            {t.families.quote}
           </p>
-          <p className="text-[#4A6B63] font-semibold text-sm uppercase tracking-wider">— The Caring Child</p>
+          <p className="text-[#4A6B63] font-semibold text-sm uppercase tracking-wider">{t.families.quoteAttr}</p>
         </motion.div>
 
         <a
           href="#signup"
           className="inline-flex items-center text-[#1E8C75] font-bold text-lg hover:text-[#073D31] transition-colors group"
         >
-          Organize Your Family's Health
+          {t.families.cta}
           <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
         </a>
       </div>

@@ -1,101 +1,77 @@
 import { useState, useRef, useEffect, KeyboardEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send } from "lucide-react";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 type Message = { from: "bai" | "user"; text: string; id: number };
 
-const GREETING: Message = {
-  id: 0,
-  from: "bai",
-  text: "Hello! I'm Bai. Ask me anything about managing your health — or try one of the questions below.",
-};
-
-const SUGGESTED = [
-  "What should I ask my doctor tomorrow?",
-  "How do I share records with family?",
-  "Is my health data private?",
-  "How does consultation capture work?",
-];
-
-type MatchEntry = { keywords: string[]; response: string };
+type MatchEntry = { keywords: string[]; en: string; fil: string };
 
 const RESPONSES: MatchEntry[] = [
   {
-    keywords: ["blood pressure", "bp", "hypertension", "amlodipine", "hyper"],
-    response:
-      "Before your next visit, I can prepare a 2-week BP average, flag any spikes, and suggest specific questions for your doctor — like whether your current dosage should be adjusted. You arrive informed, not anxious.",
+    keywords: ["blood pressure", "bp", "hypertension", "amlodipine", "presyon", "altapresyon"],
+    en: "Before your next visit, I can prepare a 2-week BP average, flag any spikes, and suggest specific questions for your doctor — like whether your current dosage should be adjusted. You arrive informed, not anxious.",
+    fil: "Bago ang iyong susunod na pagbisita, maaari akong maghanda ng 2-linggong average ng iyong BP, mag-flag ng mga spike, at magmungkahi ng mga tanong para sa iyong doktor — tulad ng kung dapat baguhin ang iyong dosage. Darating kang handa, hindi nag-aalala.",
   },
   {
-    keywords: ["medication", "medicine", "meds", "drugs", "prescri", "tablet", "capsule"],
-    response:
-      "I track all your medications — dosages, schedules, and refill dates. I'll remind you before you run out and flag anything your doctor should review at your next visit.",
+    keywords: ["medication", "medicine", "meds", "drugs", "prescri", "tablet", "capsule", "gamot", "reseta"],
+    en: "I track all your medications — dosages, schedules, and refill dates. I'll remind you before you run out and flag anything your doctor should review at your next visit.",
+    fil: "Sinusubaybayan ko ang lahat ng iyong gamot — mga dosis, iskedyul, at petsa ng refill. Ipapaalalahanan kita bago ka maubusan at iko-flag ang anumang dapat suriin ng iyong doktor sa susunod na pagbisita.",
   },
   {
-    keywords: ["share", "family", "sibling", "children", "nanay", "tatay", "lola", "lolo", "parent"],
-    response:
-      "You can share your ArugaVault with any family member — a sibling, your child, even a trusted friend. You control exactly what they can see, and you can revoke access any time.",
+    keywords: ["share", "family", "sibling", "children", "nanay", "tatay", "lola", "lolo", "parent", "kapatid", "pamilya", "ibahagi"],
+    en: "You can share your ArugaVault with any family member — a sibling, your child, even a trusted friend. You control exactly what they can see, and you can revoke access any time.",
+    fil: "Maaari mong ibahagi ang iyong ArugaVault sa sinumang miyembro ng pamilya — kapatid, anak, o pinagkakatiwalaang kaibigan. Ikaw ang nagkokontrol kung ano ang makikita nila, at maaari mong bawiin ang access anumang oras.",
   },
   {
-    keywords: ["appointment", "consult", "doctor", "visit", "tomorrow", "schedule", "prepare", "ask"],
-    response:
-      "I build a pre-visit summary before every appointment — your recent symptoms, current medications, lab results, and suggested questions. You walk in prepared, not scrambling to remember.",
+    keywords: ["appointment", "consult", "doctor", "visit", "tomorrow", "schedule", "prepare", "ask", "bukas", "doktor", "konsultasyon"],
+    en: "I build a pre-visit summary before every appointment — your recent symptoms, current medications, lab results, and suggested questions. You walk in prepared, not scrambling to remember.",
+    fil: "Gumagawa ako ng pre-visit summary bago ang bawat appointment — ang iyong mga kamakailang sintomas, kasalukuyang gamot, resulta ng lab, at mga mungkahing tanong. Pumapasok kang handa, hindi naghahanap ng maaalala.",
   },
   {
-    keywords: ["record", "vault", "arugavault", "store", "document", "lab", "result", "prescription"],
-    response:
-      "ArugaVault stores everything: prescriptions, lab results, discharge summaries, referral letters, and verified consultation transcripts. All organized by date, searchable, and shareable.",
+    keywords: ["record", "vault", "arugavault", "store", "document", "lab", "result", "prescription", "rekord", "imbak"],
+    en: "ArugaVault stores everything: prescriptions, lab results, discharge summaries, referral letters, and verified consultation transcripts. All organized by date, searchable, and shareable.",
+    fil: "Iniimbak ng ArugaVault ang lahat: mga reseta, resulta ng lab, discharge summaries, referral letters, at mga na-verify na transcript ng konsultasyon. Lahat ay nakaayos ayon sa petsa, mahahanap, at maaaring ibahagi.",
   },
   {
-    keywords: ["private", "privacy", "safe", "secure", "data", "npc", "confidential"],
-    response:
-      "Your records are yours. Nothing is stored without your approval. You decide who sees what and for how long. ArugaBai is NPC-compliant — your privacy is not optional for us.",
+    keywords: ["private", "privacy", "safe", "secure", "data", "npc", "confidential", "ligtas", "datos", "pribado"],
+    en: "Your records are yours. Nothing is stored without your approval. You decide who sees what and for how long. ArugaBai is NPC-compliant — your privacy is not optional for us.",
+    fil: "Ang iyong mga rekord ay para sa iyo. Walang iniimbak nang walang iyong pahintulot. Ikaw ang magpapasya kung sino ang makakakita ng kung ano at gaano katagal. Sumusunod ang ArugaBai sa NPC — ang iyong privacy ay hindi opsyonal para sa amin.",
   },
   {
-    keywords: ["transcri", "capture", "record consult", "clinical note", "doctor write", "documentation"],
-    response:
-      "During a consultation, Bai transcribes and structures the clinical note. Your doctor reviews and approves it. Then you consent. That's the only way it's ever stored — three layers of confirmation.",
+    keywords: ["transcri", "capture", "clinical note", "documentation", "transcript"],
+    en: "During a consultation, Bai transcribes and structures the clinical note. Your doctor reviews and approves it. Then you consent. That's the only way it's ever stored — three layers of confirmation.",
+    fil: "Sa panahon ng konsultasyon, nita-transcribe at inaayos ni Bai ang clinical note. Sinusuri at ina-approve ito ng iyong doktor. Pagkatapos ay pumapayag ka. Iyon lang ang paraan ng pag-iimbak — tatlong layer ng kumpirmasyon.",
   },
   {
-    keywords: ["who are you", "what are you", "what is bai", "tell me about", "what can you"],
-    response:
-      "I'm Bai — your personal health companion. I know your health history, prepare you for every appointment, and make sure you understand what your doctor said. Think of me as the health coordinator your family never had.",
+    keywords: ["who are you", "what are you", "what is bai", "tell me about", "what can you", "sino ka", "ano ka"],
+    en: "I'm Bai — your personal health companion. I know your health history, prepare you for every appointment, and make sure you understand what your doctor said. Think of me as the health coordinator your family never had.",
+    fil: "Ako si Bai — ang iyong personal na kasamahan sa kalusugan. Nakaalam ako ng iyong kasaysayan sa kalusugan, inihahanda kita para sa bawat appointment, at tinitiyak ko na naiintindihan mo ang sinabi ng iyong doktor. Isipin mo ako bilang health coordinator na hindi pa nagkaroon ang iyong pamilya.",
   },
   {
-    keywords: ["hi", "hello", "kamusta", "good morning", "good afternoon", "hey", "kumusta"],
-    response:
-      "Hello! Great to meet you. I'm here to help you manage your health — from preparing for appointments to keeping your records organized. What can I help you with today?",
+    keywords: ["hi", "hello", "kamusta", "good morning", "good afternoon", "hey", "kumusta", "musta"],
+    en: "Hello! Great to meet you. I'm here to help you manage your health — from preparing for appointments to keeping your records organized. What can I help you with today?",
+    fil: "Kumusta! Masaya akong makilala ka. Nandito ako para tulungan kang pamahalaan ang iyong kalusugan — mula sa paghahanda para sa mga appointment hanggang sa pag-oorganisa ng iyong mga rekord. Paano kita matutulungan ngayon?",
   },
   {
-    keywords: ["diabetes", "sugar", "glucose", "insulin", "hba1c"],
-    response:
-      "Managing diabetes takes consistency. I can track your glucose readings, flag patterns before your next consultation, and remind you what to discuss with your endocrinologist — including your HbA1c trend.",
+    keywords: ["diabetes", "sugar", "glucose", "insulin", "hba1c", "asukal"],
+    en: "Managing diabetes takes consistency. I can track your glucose readings, flag patterns before your next consultation, and remind you what to discuss with your endocrinologist — including your HbA1c trend.",
+    fil: "Ang pamamahala ng diabetes ay nangangailangan ng konsistensya. Maaari akong subaybayan ang iyong mga glucose reading, mag-flag ng mga pattern bago ang iyong susunod na konsultasyon, at paalalahanan ka kung ano ang tatalakayin sa iyong endocrinologist — kasama ang iyong HbA1c trend.",
   },
   {
-    keywords: ["hospital", "clinic", "institution", "deploy", "org", "doctor implement", "fellows"],
-    response:
-      "For hospitals and clinics, ArugaBai offers org-wide deployment. Every consultation is captured, every record verified — and your physicians never have to write during a consultation again.",
+    keywords: ["hospital", "clinic", "institution", "deploy", "org", "fellows"],
+    en: "For hospitals and clinics, ArugaBai offers org-wide deployment. Every consultation is captured, every record verified — and your physicians never have to write during a consultation again.",
+    fil: "Para sa mga ospital at klinika, nag-aalok ang ArugaBai ng org-wide na deployment. Bawat konsultasyon ay nakuha, bawat rekord ay na-verify — at ang iyong mga physician ay hindi na kailangang sumusulat habang kumukonsulta.",
   },
   {
-    keywords: ["cost", "price", "how much", "free", "subscription", "pay", "bayad"],
-    response:
-      "We're currently building ArugaBai with early users. Join the waitlist and we'll reach out with early access details — including pricing — when we're ready for you.",
+    keywords: ["cost", "price", "how much", "free", "subscription", "pay", "bayad", "magkano", "libre"],
+    en: "We're currently building ArugaBai with early users. Join the waitlist and we'll reach out with early access details — including pricing — when we're ready for you.",
+    fil: "Kasalukuyan kaming nagtatayo ng ArugaBai kasama ang mga maagang gumagamit. Sumali sa waitlist at makikipag-ugnayan kami sa iyo nang may mga detalye ng maagang access — kasama ang presyo — kapag handa na kami para sa iyo.",
   },
 ];
 
-function findResponse(input: string): string {
-  const lower = input.toLowerCase();
-  for (const entry of RESPONSES) {
-    if (entry.keywords.some((kw) => lower.includes(kw))) {
-      return entry.response;
-    }
-  }
-  return "That's a great question — and exactly the kind of thing I'm designed to help with. Once you join ArugaBai, I'll have your full health context to give you a real answer. Join the waitlist below to be first in line.";
-}
-
 let _id = 1;
-function nextId() {
-  return ++_id;
-}
+function nextId() { return ++_id; }
 
 function TypingDots() {
   return (
@@ -113,6 +89,21 @@ function TypingDots() {
 }
 
 export function InteractiveBaiDemo() {
+  const { lang, t } = useLanguage();
+
+  const GREETING: Message = {
+    id: 0,
+    from: "bai",
+    text: t.bai.greeting,
+  };
+
+  const SUGGESTED = [
+    t.bai.suggested1,
+    t.bai.suggested2,
+    t.bai.suggested3,
+    t.bai.suggested4,
+  ];
+
   const [messages, setMessages] = useState<Message[]>([GREETING]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -121,9 +112,26 @@ export function InteractiveBaiDemo() {
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Reset when language changes
+  useEffect(() => {
+    setMessages([{ id: nextId(), from: "bai", text: t.bai.greeting }]);
+    setShowSuggested(true);
+    setExchangeCount(0);
+  }, [lang]); // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
+
+  const findResponse = (userInput: string): string => {
+    const lower = userInput.toLowerCase();
+    for (const entry of RESPONSES) {
+      if (entry.keywords.some((kw) => lower.includes(kw))) {
+        return lang === "en" ? entry.en : entry.fil;
+      }
+    }
+    return t.bai.fallback;
+  };
 
   const sendMessage = (text: string) => {
     const trimmed = text.trim();
@@ -162,7 +170,7 @@ export function InteractiveBaiDemo() {
             animate={{ opacity: [1, 0.4, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
           />
-          <span className="text-white/60 text-xs font-medium">Bai is online</span>
+          <span className="text-white/60 text-xs font-medium">{t.bai.online}</span>
         </div>
       </div>
 
@@ -215,7 +223,7 @@ export function InteractiveBaiDemo() {
                 href="#signup"
                 className="text-[#6FD1C2] text-xs font-semibold underline underline-offset-2 hover:text-white transition-colors"
               >
-                Ready for the real Bai? Join the waitlist →
+                {t.bai.ctaNudge}
               </a>
             </motion.div>
           )}
@@ -254,7 +262,7 @@ export function InteractiveBaiDemo() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Ask Bai a question..."
+            placeholder={t.bai.inputPlaceholder}
             disabled={isTyping}
             className="flex-1 bg-transparent text-white text-sm placeholder:text-white/35 outline-none min-w-0 disabled:opacity-60"
           />
@@ -267,7 +275,7 @@ export function InteractiveBaiDemo() {
           </button>
         </div>
         <p className="text-white/25 text-[10px] text-center mt-2">
-          Demo responses — join the waitlist for the real Bai
+          {t.bai.disclaimer}
         </p>
       </div>
     </div>

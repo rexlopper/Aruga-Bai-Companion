@@ -1,25 +1,16 @@
 import { Cpu, Mic, Database } from "lucide-react";
 import { motion } from "framer-motion";
-
-const capabilities = [
-  {
-    icon: Cpu,
-    title: "Bai",
-    desc: "Your companion who knows your complete health history. Ready before every appointment, available between every visit.",
-  },
-  {
-    icon: Mic,
-    title: "Consultation Capture",
-    desc: "AI transcribes with the doctor's consent. Doctor reviews and approves. Record stored with patient consent.",
-  },
-  {
-    icon: Database,
-    title: "ArugaVault",
-    desc: "Every record, organized and shareable. Prescriptions, labs, discharge summaries, referral letters — all in one vault.",
-  },
-];
+import { useLanguage } from "@/i18n/LanguageContext";
 
 export function HowItWorksSection() {
+  const { t } = useLanguage();
+
+  const capabilities = [
+    { icon: Cpu,      title: t.howItWorks.cap1Title, desc: t.howItWorks.cap1Desc },
+    { icon: Mic,      title: t.howItWorks.cap2Title, desc: t.howItWorks.cap2Desc },
+    { icon: Database, title: t.howItWorks.cap3Title, desc: t.howItWorks.cap3Desc },
+  ];
+
   return (
     <section
       id="how-it-works"
@@ -35,14 +26,14 @@ export function HowItWorksSection() {
           className="text-center mb-24"
         >
           <h2 className="font-nunito text-4xl sm:text-5xl font-extrabold text-[#073D31]">
-            Three capabilities. One health story.
+            {t.howItWorks.headline}
           </h2>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-28">
           {capabilities.map(({ icon: Icon, title, desc }, i) => (
             <motion.div
-              key={title}
+              key={i}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
@@ -71,7 +62,7 @@ export function HowItWorksSection() {
         >
           <blockquote className="border-l-4 border-[#1E8C75] bg-[#F4F7F6] px-10 py-10 rounded-r-2xl">
             <p className="font-nunito text-2xl md:text-3xl italic text-[#073D31] font-bold leading-snug">
-              "AI drafts the record. Your doctor confirms it. You approve it. Then it's yours."
+              {t.howItWorks.quote}
             </p>
           </blockquote>
         </motion.div>

@@ -2,11 +2,12 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, MessageCircle } from "lucide-react";
 import { InteractiveBaiDemo } from "@/components/InteractiveBaiDemo";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 export function FloatingBaiButton() {
   const [open, setOpen] = useState(false);
+  const { t } = useLanguage();
 
-  // Prevent body scroll while sheet is open
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
@@ -30,16 +31,15 @@ export function FloatingBaiButton() {
             exit={{ opacity: 0, y: 16, scale: 0.9 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
             onClick={() => setOpen(true)}
-            aria-label="Ask Bai a question"
+            aria-label={t.floating.label}
             className="lg:hidden fixed bottom-6 right-5 z-50 flex items-center gap-2.5 bg-[#1E8C75] hover:bg-[#3FAA8D] active:scale-95 text-white text-sm font-semibold px-5 py-3.5 rounded-full shadow-xl shadow-[#1E8C75]/30 transition-colors"
           >
-            {/* Pulse ring */}
             <span className="relative flex h-2.5 w-2.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-60" />
               <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-white" />
             </span>
             <MessageCircle className="w-4 h-4" strokeWidth={2.5} />
-            Ask Bai
+            {t.floating.label}
           </motion.button>
         )}
       </AnimatePresence>
@@ -77,7 +77,7 @@ export function FloatingBaiButton() {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#6FD1C2] opacity-60" />
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-[#6FD1C2]" />
                   </span>
-                  <span className="text-white/70 text-sm font-medium">Bai is online</span>
+                  <span className="text-white/70 text-sm font-medium">{t.bai.online}</span>
                 </div>
                 <button
                   onClick={() => setOpen(false)}
@@ -88,7 +88,6 @@ export function FloatingBaiButton() {
                 </button>
               </div>
 
-              {/* Demo — constrained height so it scrolls internally */}
               <div className="px-4 pb-6 pt-2 overflow-y-auto" style={{ maxHeight: "calc(92dvh - 60px)" }}>
                 <InteractiveBaiDemo />
               </div>

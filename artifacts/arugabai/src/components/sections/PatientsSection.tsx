@@ -1,44 +1,35 @@
 import { Calendar, FileText, Lock } from "lucide-react";
 import { motion } from "framer-motion";
 import { BaiChatDemo } from "@/components/BaiChatDemo";
-
-const benefits = [
-  {
-    icon: Calendar,
-    title: "Prepared before every appointment",
-    desc: "Bai builds your pre-visit summary so you arrive knowing what to discuss — your recent symptoms, current medications, and questions to ask.",
-  },
-  {
-    icon: FileText,
-    title: "Understand what your doctor said",
-    desc: "The consultation is transcribed, approved by your doctor, and explained in plain language. No more trying to remember everything.",
-  },
-  {
-    icon: Lock,
-    title: "Your records are yours",
-    desc: "Nothing is stored without your approval. You decide who sees your records, when, and for how long.",
-  },
-];
+import { useLanguage } from "@/i18n/LanguageContext";
 
 export function PatientsSection() {
+  const { t } = useLanguage();
+
+  const benefits = [
+    { icon: Calendar, title: t.patients.benefit1Title, desc: t.patients.benefit1Desc },
+    { icon: FileText, title: t.patients.benefit2Title, desc: t.patients.benefit2Desc },
+    { icon: Lock,     title: t.patients.benefit3Title, desc: t.patients.benefit3Desc },
+  ];
+
   return (
     <section id="for-patients" data-testid="patients-section" className="bg-[#F4F7F6] py-36 px-6 sm:px-10 lg:px-16">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
 
           <div>
-            <p className="text-[#E8960F] uppercase tracking-widest font-bold text-xs mb-5">For Patients</p>
+            <p className="text-[#E8960F] uppercase tracking-widest font-bold text-xs mb-5">{t.patients.label}</p>
             <h2 className="font-nunito text-4xl sm:text-5xl font-extrabold text-[#073D31] mb-8 leading-tight">
-              Meet Bai — who already knows your health story.
+              {t.patients.headline}
             </h2>
             <p className="text-xl text-[#4A6B63] leading-relaxed mb-14">
-              No more arriving at consultations empty-handed. Bai prepares you before every appointment and helps you understand what your doctor said.
+              {t.patients.body}
             </p>
 
             <div className="space-y-10 mb-14">
               {benefits.map(({ icon: Icon, title, desc }, i) => (
                 <motion.div
-                  key={title}
+                  key={i}
                   initial={{ opacity: 0, x: -20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true, amount: 0.5 }}
@@ -60,9 +51,9 @@ export function PatientsSection() {
 
             <div className="bg-white border-l-4 border-[#E8960F] px-8 py-8 rounded-r-2xl shadow-sm">
               <p className="text-lg italic text-[#1A2B28] leading-relaxed mb-4">
-                "I keep an envelope of prescriptions. I try to remember. But every new doctor asks me to start from scratch — and I can never remember everything."
+                {t.patients.quote}
               </p>
-              <p className="text-[#4A6B63] font-semibold text-sm uppercase tracking-wider">— The Patient</p>
+              <p className="text-[#4A6B63] font-semibold text-sm uppercase tracking-wider">{t.patients.quoteAttr}</p>
             </div>
           </div>
 

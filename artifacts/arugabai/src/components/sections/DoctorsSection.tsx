@@ -1,14 +1,22 @@
 import { Mic, FileText, CheckCircle, Archive } from "lucide-react";
 import { motion } from "framer-motion";
-
-const steps = [
-  { icon: Mic, step: "01", title: "Patient records consultation", desc: "With doctor's consent, the session is recorded." },
-  { icon: FileText, step: "02", title: "AI structures the note", desc: "Bai transcribes and formats the clinical record." },
-  { icon: CheckCircle, step: "03", title: "Doctor reviews & approves", desc: "The physician edits and confirms. Their name, their authority." },
-  { icon: Archive, step: "04", title: "Record stored in ArugaVault", desc: "Patient consents. Record saved. Accessible forever." },
-];
+import { useLanguage } from "@/i18n/LanguageContext";
 
 export function DoctorsSection() {
+  const { t } = useLanguage();
+
+  const steps = [
+    { icon: Mic,         step: "01", title: t.doctors.step1Title, desc: t.doctors.step1Desc },
+    { icon: FileText,    step: "02", title: t.doctors.step2Title, desc: t.doctors.step2Desc },
+    { icon: CheckCircle, step: "03", title: t.doctors.step3Title, desc: t.doctors.step3Desc },
+    { icon: Archive,     step: "04", title: t.doctors.step4Title, desc: t.doctors.step4Desc },
+  ];
+
+  const panels = [
+    { title: t.doctors.forDoctorsTitle,     body: t.doctors.forDoctorsBody },
+    { title: t.doctors.forInstitutionTitle, body: t.doctors.forInstitutionBody },
+  ];
+
   return (
     <section
       id="for-doctors"
@@ -24,12 +32,12 @@ export function DoctorsSection() {
           transition={{ duration: 0.6 }}
           className="max-w-3xl mb-20"
         >
-          <p className="text-[#6FD1C2] uppercase tracking-widest font-bold text-xs mb-5">For Hospital & Clinic Leaders</p>
+          <p className="text-[#6FD1C2] uppercase tracking-widest font-bold text-xs mb-5">{t.doctors.label}</p>
           <h2 className="font-nunito text-4xl sm:text-5xl font-extrabold text-white mb-8 leading-tight">
-            Your doctors will never have to write during a consultation again.
+            {t.doctors.headline}
           </h2>
           <p className="text-xl text-blue-100/80 leading-relaxed">
-            Built for fellows, consultants, and hospital directors who can deploy ArugaBai across their organization. Every consultation captured. Every record verified. Zero writing burden on the physician.
+            {t.doctors.body}
           </p>
         </motion.div>
 
@@ -61,18 +69,9 @@ export function DoctorsSection() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-          {[
-            {
-              title: "For your doctors",
-              body: "Less documentation. More presence. Your physicians stay in the consultation, not behind a keyboard.",
-            },
-            {
-              title: "For your institution",
-              body: "Org-wide deployment. Every consultation captured, verified, and complete. A searchable clinical record system across your practice.",
-            },
-          ].map(({ title, body }, i) => (
+          {panels.map(({ title, body }, i) => (
             <motion.div
-              key={title}
+              key={i}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.4 }}
@@ -90,7 +89,7 @@ export function DoctorsSection() {
           href="#signup"
           className="inline-flex justify-center items-center bg-[#1E8C75] hover:bg-[#3FAA8D] text-white px-10 py-5 rounded-xl text-lg font-bold transition-all duration-200 shadow-xl shadow-black/20 hover:-translate-y-0.5"
         >
-          Request a Demo →
+          {t.doctors.cta}
         </a>
 
       </div>
