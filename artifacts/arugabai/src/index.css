@@ -223,12 +223,19 @@ html {
   scroll-behavior: smooth;
 }
 
+/*
+  Nexa unicode-range excludes characters missing from the trial font:
+  U+0022 ("), U+0024 ($), U+0025 (%), U+0027 ('),
+  U+2018–2019 (' '), U+201C–201D (" ")
+  These fall back to Open Sans automatically.
+*/
 @font-face {
   font-family: 'Nexa';
   src: url('/fonts/fonnts.com-Nexa-Thin_1778987987720.ttf') format('truetype');
   font-weight: 100;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0000-0021, U+0023, U+0026, U+0028-2017, U+201A-201B, U+201E-FFFF;
 }
 
 @font-face {
@@ -237,6 +244,7 @@ html {
   font-weight: 300;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0000-0021, U+0023, U+0026, U+0028-2017, U+201A-201B, U+201E-FFFF;
 }
 
 @font-face {
@@ -245,6 +253,7 @@ html {
   font-weight: 400;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0000-0021, U+0023, U+0026, U+0028-2017, U+201A-201B, U+201E-FFFF;
 }
 
 @font-face {
@@ -253,6 +262,7 @@ html {
   font-weight: 700;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0000-0021, U+0023, U+0026, U+0028-2017, U+201A-201B, U+201E-FFFF;
 }
 
 @font-face {
@@ -261,6 +271,7 @@ html {
   font-weight: 800;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0000-0021, U+0023, U+0026, U+0028-2017, U+201A-201B, U+201E-FFFF;
 }
 
 @font-face {
@@ -269,6 +280,7 @@ html {
   font-weight: 900;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0000-0021, U+0023, U+0026, U+0028-2017, U+201A-201B, U+201E-FFFF;
 }
 
 .font-nunito {
