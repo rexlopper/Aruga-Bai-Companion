@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { BaiChatDemo } from "@/components/BaiChatDemo";
+import { InteractiveBaiDemo } from "@/components/InteractiveBaiDemo";
 
 function EcgLine() {
   return (
@@ -132,7 +132,7 @@ export function HeroSection() {
             <div className="relative w-full max-w-sm">
               {/* Glow halo behind card */}
               <div className="absolute inset-0 -m-6 rounded-full bg-[#1E8C75] blur-3xl opacity-15 pointer-events-none" />
-              <BaiChatDemo />
+              <InteractiveBaiDemo />
             </div>
           </motion.div>
         </div>
