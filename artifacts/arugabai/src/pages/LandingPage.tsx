@@ -7,6 +7,7 @@ import { DoctorsSection } from "@/components/sections/DoctorsSection";
 import { HowItWorksSection } from "@/components/sections/HowItWorksSection";
 import { SignupSection } from "@/components/sections/SignupSection";
 import { Footer } from "@/components/sections/Footer";
+import { FloatingBaiButton } from "@/components/FloatingBaiButton";
 import { useAnalytics } from "@/hooks/useAnalytics";
 
 export default function LandingPage() {
@@ -25,6 +26,7 @@ export default function LandingPage() {
         <SignupSection />
       </main>
       <Footer />
+      <FloatingBaiButton />
     </div>
   );
 }
